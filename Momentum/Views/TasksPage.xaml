@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<ContentPage
+    x:Class="Momentum.Views.TasksPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:viewmodels="clr-namespace:Momentum.ViewModels"
+    xmlns:models="clr-namespace:Momentum.Models"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:DataType="viewmodels:TasksViewModel"
+    x:Name="TasksPageRoot"
+    Title="Tasks"
+    BackgroundColor="#121212">
+
+    <VerticalStackLayout Padding="20" Spacing="20">
+
+        <VerticalStackLayout Spacing="2">
+
+            <Label
+                    Text="Mis Tareas"
+                    FontSize="32"
+                    FontAttributes="Bold"
+                    TextColor="White" />
+
+            <Label
+                    Text="Se productivo todo el día"
+                    FontSize="14"
+                    TextColor="#AAAAAA" />
+
+        </VerticalStackLayout>
+
+        <Border
+                Padding="15"
+                BackgroundColor="#1E1E1E">
+
+            <VerticalStackLayout Spacing="12">
+
+                <Entry
+                        Placeholder="Nueva tarea..."
+                        Text="{Binding TaskTitle}"
+                        TextColor="White"
+                        PlaceholderColor="#888888"
+                        BackgroundColor="Transparent" />
+
+                <Button
+                        Text="Agregar Tarea"
+                        Command="{Binding AddTaskCommand}"
+                        HeightRequest="50"
+                        CornerRadius="16"
+                        BackgroundColor="#4F46E5"
+                        TextColor="White"
+                        FontAttributes="Bold" />
+
+            </VerticalStackLayout>
+
+        </Border>
+
+        <CollectionView
+                ItemsSource="{Binding Tasks}"
+                SelectionMode="None">
+
+            <CollectionView.ItemTemplate>
+
+                <!-- IMPORTANTE -->
+                <DataTemplate
+                        x:DataType="models:TaskItem">
+
+                    <SwipeView>
+
+                        <SwipeView.RightItems>
+
+                            <SwipeItems>
+
+                                <SwipeItem
+                                        Text="Borrar"
+                                        BackgroundColor="#DC2626"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:TasksViewModel}}, Path=DeleteTaskCommand}"
+                                        CommandParameter="{Binding .}" />
+
+                            </SwipeItems>
+
+                        </SwipeView.RightItems>
+
+                        <Border
+                                Margin="0,0,0,12"
+                                Padding="15"
+                                BackgroundColor="#1E1E1E">
+
+                            <Grid ColumnDefinitions="Auto,*">
+
+                                <CheckBox
+                                        IsChecked="{Binding IsCompleted}"
+                                        Color="#4F46E5">
+
+                                    <CheckBox.Behaviors>
+
+                                        <toolkit:EventToCommandBehavior
+                                            EventName="CheckedChanged"
+                                            BindingContext="{Binding Source={x:Reference TasksPageRoot}}"
+                                            Command="{Binding BindingContext.ToggleTaskCommand}"
+                                            CommandParameter="{Binding .}" />
+
+                                    </CheckBox.Behaviors>
+
+                                </CheckBox>
+
+                                <VerticalStackLayout
+                                        Grid.Column="1"
+                                        Margin="10,0,0,0">
+
+                                    <Label
+                                            Text="{Binding Title}"
+                                            FontSize="17"
+                                            FontAttributes="Bold"
+                                            TextColor="White" />
+
+                                    <Label
+                                            Text="{Binding CreatedAt, StringFormat='Created: {0:dd/MM/yyyy}'}"
+                                            FontSize="12"
+                                            TextColor="#888888" />
+
+                                </VerticalStackLayout>
+
+                            </Grid>
+
+                        </Border>
+
+                    </SwipeView>
+
+                </DataTemplate>
+
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+    </VerticalStackLayout>
+</ContentPage>
